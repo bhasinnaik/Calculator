@@ -11,19 +11,19 @@ import UIKit
 class ViewController: UIViewController {
 
     
-    @IBOutlet private weak var display: UILabel!
-      private var userIsInMiddleOfTyping = false
+    @IBOutlet fileprivate weak var display: UILabel!
+      fileprivate var userIsInMiddleOfTyping = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
         brain.addUnaryOperation("Z") { [ weak weakSelf = self ] in
-            weakSelf?.display.textColor = UIColor.redColor()
+            weakSelf?.display.textColor = UIColor.red
             return sqrt($0)
             
         
         }
     }
-    @IBAction private func touchDigit(sender: UIButton) {
+    @IBAction fileprivate func touchDigit(_ sender: UIButton) {
         let digit = sender.currentTitle!
         if userIsInMiddleOfTyping{
             let textCurrentlyDisplay = display.text!
@@ -37,7 +37,7 @@ class ViewController: UIViewController {
     }
     
 
-    private var displayValue: Double{
+    fileprivate var displayValue: Double{
         get{
             return Double(display.text!)!
         }
@@ -46,8 +46,8 @@ class ViewController: UIViewController {
         }
     }
     
-    private var brain = CalculatorBrain()
-    @IBAction private func performOperation(sender: UIButton) {
+    fileprivate var brain = CalculatorBrain()
+    @IBAction fileprivate func performOperation(_ sender: UIButton) {
         if userIsInMiddleOfTyping {
             brain.setOperand(displayValue)
             userIsInMiddleOfTyping = false
@@ -60,7 +60,7 @@ class ViewController: UIViewController {
         
     }
     
-    @IBAction func touchFloatingPoint(sender: UIButton) {
+    @IBAction func touchFloatingPoint(_ sender: UIButton) {
         let searchCharacter: Character = "."
         if !(display.text!.characters.contains(searchCharacter)){
             touchDigit(sender)

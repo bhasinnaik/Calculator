@@ -9,54 +9,54 @@
 import Foundation
 
 class CalculatorBrain{
-    private var accumulator = 0.0
+    fileprivate var accumulator = 0.0
     
-    func setOperand(operand: Double){
+    func setOperand(_ operand: Double){
         accumulator = operand
     }
-    func addUnaryOperation(symbol: String, operation: (Double) -> Double)
+    func addUnaryOperation(_ symbol: String, operation: @escaping (Double) -> Double)
     {
-        operations[symbol]  = Operation.UnaryOperation(operation)
+        operations[symbol]  = Operation.unaryOperation(operation)
         
     }
     var operations: Dictionary<String,Operation> = [
-        "π" : Operation.Constant(M_PI),
-        "√" : Operation.UnaryOperation(sqrt),
-        "cos": Operation.UnaryOperation(cos),
-        "✕" : Operation.BinalryOperation({ $0 * $1 }),
-        "÷" : Operation.BinalryOperation({ $0 / $1 }),
-        "-" : Operation.BinalryOperation({ $0 - $1 }),
-        "+" : Operation.BinalryOperation({ $0 + $1 }),
-        "=" : Operation.Equals
+        "π" : Operation.constant(M_PI),
+        "√" : Operation.unaryOperation(sqrt),
+        "cos": Operation.unaryOperation(cos),
+        "✕" : Operation.binalryOperation({ $0 * $1 }),
+        "÷" : Operation.binalryOperation({ $0 / $1 }),
+        "-" : Operation.binalryOperation({ $0 - $1 }),
+        "+" : Operation.binalryOperation({ $0 + $1 }),
+        "=" : Operation.equals
         
     ]
     enum Operation{
-        case Constant(Double)
-        case UnaryOperation((Double) -> Double)
-        case BinalryOperation((Double,Double) -> Double)
-        case Equals
+        case constant(Double)
+        case unaryOperation((Double) -> Double)
+        case binalryOperation((Double,Double) -> Double)
+        case equals
     }
     
     struct PendingBinaryOperationInfo {
         var binaryFunction: ((Double,Double) -> Double)
         var firstOperand: Double
     }
-    private var pending: PendingBinaryOperationInfo?
+    fileprivate var pending: PendingBinaryOperationInfo?
     
-    func performOperation(symbol: String){
+    func performOperation(_ symbol: String){
         if let operation = operations[symbol] {
             switch operation {
-            case .Constant(let value): accumulator = value
-            case .UnaryOperation(let function): accumulator = function(accumulator)
-            case .BinalryOperation(let function):
+            case .constant(let value): accumulator = value
+            case .unaryOperation(let function): accumulator = function(accumulator)
+            case .binalryOperation(let function):
                 executePendingBinaryOperation()
                 pending = PendingBinaryOperationInfo(binaryFunction: function, firstOperand: accumulator)
-            case .Equals: executePendingBinaryOperation()
+            case .equals: executePendingBinaryOperation()
                 
             }
         }
     }
-    private func executePendingBinaryOperation(){
+    fileprivate func executePendingBinaryOperation(){
         if pending != nil {
             accumulator = pending!.binaryFunction(pending!.firstOperand,accumulator)
             pending = nil
